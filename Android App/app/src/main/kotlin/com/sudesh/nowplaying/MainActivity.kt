@@ -925,31 +925,54 @@ class MainActivity : Activity() {
     // CONVERT BITMAP TO RGB565
     // --------------------------------------------------
 
+        
     private fun convertArtworkToRGB565(bitmap: Bitmap): ByteArray {
 
-        val resized = Bitmap.createScaledBitmap(
+        val size = 240
+
+        // Calculate center-crop dimensions while preserving aspect ratio.
+        val scale = maxOf(
+            size.toFloat() / bitmap.width,
+            size.toFloat() / bitmap.height
+        )
+
+        val scaledWidth = (bitmap.width * scale).toInt()
+        val scaledHeight = (bitmap.height * scale).toInt()
+
+        val scaledBitmap = Bitmap.createScaledBitmap(
             bitmap,
-            96,
-            96,
+            scaledWidth,
+            scaledHeight,
             true
         )
 
-        val pixels = IntArray(96 * 96)
+        // Crop the centre into a 240x240 square.
+        val xOffset = (scaledWidth - size) / 2
+        val yOffset = (scaledHeight - size) / 2
 
-        resized.getPixels(
-            pixels,
-            0,
-            96,
-            0,
-            0,
-            96,
-            96
+        val croppedBitmap = Bitmap.createBitmap(
+            scaledBitmap,
+            xOffset,
+            yOffset,
+            size,
+            size
         )
 
-        val output = ByteArray(96 * 96 * 2)
+        val pixels = IntArray(size * size)
+
+        croppedBitmap.getPixels(
+            pixels,
+            0,
+            size,
+            0,
+            0,
+            size,
+            size
+        )
+
+        val output = ByteArray(size * size * 2)
 
         for (i in pixels.indices) {
-
             val pixel = pixels[i]
 
             val red = (pixel shr 16) and 0xFF
@@ -966,8 +989,12 @@ class MainActivity : Activity() {
             output[i * 2 + 1] = ((rgb565 shr 8) and 0xFF).toByte()
         }
 
-        if (resized !== bitmap) {
-            resized.recycle()
+        if (croppedBitmap !== scaledBitmap) {
+            croppedBitmap.recycle()
+        }
+
+        if (scaledBitmap !== bitmap) {
+            scaledBitmap.recycle()
         }
 
         return output

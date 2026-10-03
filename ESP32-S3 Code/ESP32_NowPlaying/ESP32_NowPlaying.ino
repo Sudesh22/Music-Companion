@@ -47,8 +47,8 @@ static const char *CMD_UUID =
 // ALBUM ART CONFIGURATION
 // --------------------------------------------------
 
-static const uint16_t ART_W = 96;
-static const uint16_t ART_H = 96;
+static const uint16_t ART_W = 240;
+static const uint16_t ART_H = 240;
 
 static const size_t ART_BYTES = ART_W * ART_H * 2;
 
@@ -453,46 +453,14 @@ static void buildUI() {
 
     updateConnectionUI();
 
-    // Album artwork
+    // Full-screen album artwork background.
+    // Scale the 96x96 artwork to 240x240 and center it.
+    // UI elements created below remain layered above the image.
 
     artImage = lv_img_create(screenObj);
 
-    lv_obj_set_size(
-        artImage,
-        ART_W,
-        ART_H
-    );
-
-    lv_obj_align(
-        artImage,
-        LV_ALIGN_TOP_MID,
-        0,
-        27
-    );
-
-    lv_obj_set_style_radius(
-        artImage,
-        12,
-        0
-    );
-
-    lv_obj_set_style_clip_corner(
-        artImage,
-        true,
-        0
-    );
-
-    lv_obj_set_style_bg_color(
-        artImage,
-        lv_color_hex(0x252936),
-        0
-    );
-
-    lv_obj_set_style_bg_opa(
-        artImage,
-        LV_OPA_COVER,
-        0
-    );
+    lv_obj_center(artImage);
+    lv_img_set_zoom(artImage, 256);  // Native 240x240 artwork; no scaling
 
     // Song title
 
@@ -1182,6 +1150,11 @@ void setup() {
 
     Serial.begin(115200);
 
+    Serial.printf("PSRAM found: %s\n", psramFound() ? "YES" : "NO");
+    Serial.printf("PSRAM size: %u bytes\n", ESP.getPsramSize());
+    Serial.printf("PSRAM free: %u bytes\n", ESP.getFreePsram());
+    Serial.printf("Heap free: %u bytes\n", ESP.getFreeHeap());
+
     // Display backlight
 
     pinMode(TFT_BL, OUTPUT);
@@ -1412,6 +1385,10 @@ void loop() {
                 artImage,
                 &artDescriptor
             );
+
+            // Maintain the full-screen background for each new track.
+            lv_obj_center(artImage);
+            lv_img_set_zoom(artImage, 256);
 
         } else {
             Serial.println("Discarding stale artwork");
