@@ -536,14 +536,21 @@ class MainActivity : Activity() {
 
         timeRow.addView(
             elapsedView,
-            LinearLayout.LayoutParams(0, dp(24), 1f)
+            LinearLayout.LayoutParams(
+                0,
+                dp(24),
+                1f
+            )
         )
+
+        durationView.gravity = Gravity.END
 
         timeRow.addView(
             durationView,
-            LinearLayout.LayoutParams(0, dp(24), 1f).apply {
-                gravity = Gravity.END
-            }
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                dp(24)
+            )
         )
 
         val controls = LinearLayout(this).apply {
