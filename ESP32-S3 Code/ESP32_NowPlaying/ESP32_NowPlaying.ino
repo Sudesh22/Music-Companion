@@ -52,7 +52,7 @@ static const uint16_t ART_H = 240;
 
 static const size_t ART_BYTES = ART_W * ART_H * 2;
 
-static const size_t ART_MAX_CHUNK_DATA = 180;
+static const size_t ART_MAX_CHUNK_DATA = 234;
 
 // --------------------------------------------------
 // DISPLAY
@@ -260,7 +260,7 @@ static void updateConnectionUI() {
         connectionLabel,
         bleConnected
             ? LV_SYMBOL_BLUETOOTH " CONNECTED"
-            : LV_SYMBOL_BLUETOOTH " WAITING FOR TABLET"
+            : LV_SYMBOL_BLUETOOTH " DISCONNECTED"
     );
 
     lv_obj_set_style_text_color(
@@ -477,7 +477,7 @@ static void buildUI() {
 
     lv_label_set_long_mode(
         titleLabel,
-        LV_LABEL_LONG_DOT
+        LV_LABEL_LONG_SCROLL_CIRCULAR
     );
 
     lv_obj_set_style_text_align(
@@ -529,7 +529,8 @@ static void buildUI() {
 
     lv_obj_set_style_text_color(
         artistLabel,
-        lv_color_hex(0xA4A9B5),
+        // lv_color_hex(0xA4A9B5),
+        lv_color_white(),
         0
     );
 

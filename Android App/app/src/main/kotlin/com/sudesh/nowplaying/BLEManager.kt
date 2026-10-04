@@ -61,7 +61,7 @@ class BLEManager(
         private const val HEADER_SIZE = 10
 
         // Keep packets below the negotiated ATT payload limit.
-        private const val MAX_CHUNK_DATA = 180
+        private const val MAX_CHUNK_DATA = 234
 
         private const val MAX_METADATA_CHUNKS = 40
         private const val MAX_ARTWORK_CHUNKS = 1400
@@ -872,7 +872,7 @@ class BLEManager(
                 gatt.writeCharacteristic(
                     pending.characteristic,
                     pending.data,
-                    BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+                    BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
                 )
 
             } else {
@@ -880,7 +880,7 @@ class BLEManager(
                 @Suppress("DEPRECATION")
                 run {
                     pending.characteristic.writeType =
-                        BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+                        BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
 
                     pending.characteristic.value = pending.data
 
